@@ -26,6 +26,7 @@ namespace DataVerse.Core.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -35,10 +36,12 @@ namespace DataVerse.Core.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("FirtsName")
+                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -84,7 +87,8 @@ namespace DataVerse.Core.Migrations
 
             modelBuilder.Entity("DataVerse.Entities.Customer", b =>
                 {
-                    b.Navigation("Phones");
+                    b.Navigation("Phones")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

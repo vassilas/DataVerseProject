@@ -36,6 +36,7 @@ namespace DataVerse.Services
                 LastName = customerOptions.LastName,
                 Address = customerOptions.Address,
                 Email = customerOptions.Email,
+                Phones = customerOptions.Phones
                 /* 
                  * TODO: Create phones also here.
                 */
@@ -101,9 +102,9 @@ namespace DataVerse.Services
             customer.LastName = customerOptions.LastName;
             customer.Address = customerOptions.Address;
             customer.Email = customerOptions.Email;
-            /* 
-             * TODO: Update phones also here.
-            */
+            customer.Phones.PhoneHome = customerOptions.Phones.PhoneHome;
+            customer.Phones.PhoneMobile = customerOptions.Phones.PhoneMobile;
+            customer.Phones.PhoneWork = customerOptions.Phones.PhoneWork;
 
             _dbContext.SaveChanges();
             return new CustomerOptions(customer);

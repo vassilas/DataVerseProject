@@ -1,4 +1,5 @@
 ﻿using DataVerse.Interfaces;
+using DataVerse.Options;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -29,5 +30,36 @@ namespace DataVerse.Web.Controllers
             ViewData["Customer"] = customer;
             return View(customer);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit([Bind("Id,FirstName,LastName,Address,Email,Phones")] CustomerOptions customerOptions)
+        {
+            _customerService.UpdateCustomer(customerOptions, customerOptions.Id);
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Delete(int customer_id)
+        {
+            var res = _customerService.DeleteCustomer(customer_id);
+            return RedirectToAction("Index");
+
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create([Bind("FirstName,LastName,Address,Email,Phones")] CustomerOptions customerOptions)
+        {
+            _customerService.CreateCustomer(customerOptions);
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

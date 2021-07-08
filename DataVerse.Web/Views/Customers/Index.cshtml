@@ -8,10 +8,12 @@
 <h1>Customers</h1>
 
 
-@*<h1>@ViewBag.Customers[0].FirtsName</h1>
-<h1>@ViewBag.Customers[1].FirtsName</h1>
-<h1>@ViewBag.Customers[2].FirtsName</h1>
-<h1>@ViewBag.Customers[3].FirtsName</h1>*@
+@*<a asp-action="Create" class="btn" onclick="CreateCustomerModalShow()">
+    <img src="./img/delete_img.png" width="40" length="40" alt="Delete" />
+</a>*@
+<p>
+    <a asp-action="Create">Create New Customer</a>
+</p>
 
 <table class="table">
     <thead class="thead-dark">
@@ -23,6 +25,7 @@
             <th scope="col">Email</th>
             <th scope="col">PhoneHome<br />PhoneWork<br />PhoneMobile</th>
             <th scope="col"></th>
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
@@ -30,21 +33,82 @@
         @foreach (var customer in @ViewBag.Customers)
         {
             i++;
-        <tr class='clickable-row'>
-            <td>@i</td>
-            <td>@customer.FirstName</td>
-            <td>@customer.LastName</td>
-            <td>@customer.Address</td>
-            <td>@customer.Email</td>
-            <td>@customer.Phones.PhoneHome<br />@customer.Phones.PhoneWork<br />@customer.Phones.PhoneMobile</td>
+            <tr id="row_@customer.Id" class='clickable-row'>
+                <td>@i</td>
+                <td>@customer.FirstName</td>
+                <td>@customer.LastName</td>
+                <td>@customer.Address</td>
+                <td>@customer.Email</td>
+                <td>@customer.Phones.PhoneHome<br />@customer.Phones.PhoneWork<br />@customer.Phones.PhoneMobile</td>
 
-            <td>
-                <a asp-action="Edit" asp-route-customer_id="@customer.Id">
-                    <img src="./img/edit_img.png" width="70" length="150" alt="Edit" />
-                </a>
-            </td>
-
-        </tr>
+                <td>
+                    <a asp-action="Edit" asp-route-customer_id="@customer.Id">
+                        <img src="./img/edit_img.png" width="70" length="150" alt="Edit" />
+                    </a>
+                </td>
+                <td>
+                    <a href="#" class="btn" onclick="ConfirmDelete(@customer.Id,'@customer.Email')">
+                        <img src="./img/delete_img.png" width="40" length="40" alt="Delete" />
+                    </a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
+
+@*DELETE CUSTOMER CONFIRMATION MODAL*@
+@*----------------------------------------------------*@
+<div class="modal fade" id="DeleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Delete Customer</h3>
+            </div>
+            <div class="modal-body">
+                <h4>Are you sure you want to Remove Customer <a id="CustomerIdShow" style="color:maroon"></a>?</h4>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-danger" data-dismiss="modal">Cancel</a>
+                <a href="#" class="btn btn-success" onclick="DeleteCustomer()">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*hidden field for storing current customerId and mail *@
+@*----------------------------------------------------*@
+<input type="hidden" id="hiddenCustomerId" />
+<input type="hidden" id="hiddenCustomerEmail" />
+
+
+
+
+@section scripts{
+    <script>
+
+        var CreateCustomerModalShow = function () {
+            $("#CreateModal").modal('show');
+        }
+
+        var ConfirmDelete = function (CustomerId, CustomerEmail) {
+            $("#hiddenCustomerId").val(CustomerId);
+            $("#hiddenCustomerEmail").val(CustomerEmail);
+            $("#CustomerIdShow").html(CustomerEmail);
+            $("#DeleteModal").modal('show');
+
+        }
+        var DeleteCustomer = function () {
+            var empId = $("#hiddenCustomerId").val();
+            $.ajax({
+                type: "POST",
+                url: "/Customers/Delete",
+                data: { customer_id: empId },
+                success: function (result) {
+                    $("#DeleteModal").modal("hide");
+                    $("#row_" + empId).remove();
+                }
+            })
+        }
+    </script>
+}
